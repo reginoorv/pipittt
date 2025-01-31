@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIPIT - Sistem POS Apotek</title>
+    <meta name="description" content="Sistem POS Apotek modern untuk manajemen penjualan dan inventori obat">
+    <meta name="keywords" content="pos apotek, manajemen apotek, sistem apotek, pharmacy pos">
+    <meta property="og:title" content="PIPIT - Sistem POS Apotek">
+    <meta property="og:description" content="Sistem POS Apotek modern untuk manajemen penjualan dan inventori obat">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PIPIT - Sistem POS Apotek">
+    <meta name="twitter:description" content="Sistem POS Apotek modern untuk manajemen penjualan dan inventori obat">
+    
+    <!-- Load React dan dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Load Supabase sebelum script lainnya -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Load style dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="styles/main.css" rel="stylesheet">
+    <link href="styles/components.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <!-- Load utils first -->
+    <script type="text/babel" src="utils/supabase.js"></script>
+    <script type="text/babel" src="utils/auth.js"></script>
+    <script type="text/babel" src="utils/format.js"></script>
+    <script type="text/babel" src="utils/print.js"></script>
+
+    <!-- Load components -->
+    <script type="text/babel" src="components/LoadingSpinner.js"></script>
+    <script type="text/babel" src="components/Alert.js"></script>
+    <script type="text/babel" src="components/Modal.js"></script>
+    <script type="text/babel" src="components/Button.js"></script>
+    <script type="text/babel" src="components/Card.js"></script>
+    <script type="text/babel" src="components/Table.js"></script>
+    <script type="text/babel" src="components/Sidebar.js"></script>
+    <script type="text/babel" src="components/Header.js"></script>
+    
+    <!-- Load layouts -->
+    <script type="text/babel" src="layouts/AuthLayout.js"></script>
+    <script type="text/babel" src="layouts/MainLayout.js"></script>
+    
+    <!-- Load pages -->
+    <script type="text/babel" src="pages/Login.js"></script>
+    <script type="text/babel" src="pages/Dashboard.js"></script>
+    <script type="text/babel" src="pages/Transaction.js"></script>
+    <script type="text/babel" src="pages/Products.js"></script>
+    <script type="text/babel" src="pages/Suppliers.js"></script>
+    <script type="text/babel" src="pages/Users.js"></script>
+    <script type="text/babel" src="pages/Reports.js"></script>
+
+    <!-- Load main app last -->
+    <script type="text/babel" src="app.js"></script>
+</body>
+</html>
