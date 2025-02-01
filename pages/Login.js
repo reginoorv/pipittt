@@ -9,13 +9,16 @@ function Login({ onLogin }) {
     try {
       setLoading(true);
       setError('');
-      const result = await login(username, password);
-      localStorage.setItem('auth_token', result.objectId);
-      localStorage.setItem('user_role', result.objectData.role);
-      onLogin(result.objectData.role);
+      const result = await signIn(username, password);
+      
+      if (result && result.user) {
+        onLogin(result.user.role);
+      } else {
+        throw new Error('Login gagal');
+      }
     } catch (error) {
       reportError(error);
-      setError('Username atau password salah');
+      setError(error.message || 'Username atau password salah');
     } finally {
       setLoading(false);
     }
