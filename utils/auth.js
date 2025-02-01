@@ -1,30 +1,8 @@
-function login(username, password) {
-  try {
-    return trickleCreateObject('auth_session', {
-      username,
-      role: username === 'admin' ? 'admin' : 'kasir',
-      loginTime: new Date().toISOString()
-    });
-  } catch (error) {
-    reportError(error);
-    throw new Error('Login failed');
-  }
-}
-
-function logout() {
-  try {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_role');
-  } catch (error) {
-    reportError(error);
-    throw new Error('Logout failed');
-  }
-}
-
 function checkAuth() {
   try {
-    const token = localStorage.getItem('auth_token');
-    return !!token;
+    const userId = localStorage.getItem('user_id');
+    const userRole = localStorage.getItem('user_role');
+    return !!userId && !!userRole;
   } catch (error) {
     reportError(error);
     return false;
@@ -33,9 +11,20 @@ function checkAuth() {
 
 function getUserRole() {
   try {
-    return localStorage.getItem('user_role') || 'kasir';
+    return localStorage.getItem('user_role');
   } catch (error) {
     reportError(error);
-    return 'kasir';
+    return null;
+  }
+}
+
+function signOut() {
+  try {
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('user_role');
+    localStorage.removeItem('user_name');
+  } catch (error) {
+    reportError(error);
+    throw new Error('Logout gagal');
   }
 }
