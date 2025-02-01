@@ -1,8 +1,8 @@
-function MainLayout({ userRole, onLogout, children }) {
+function MainLayout({ userRole, onLogout }) {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [currentPage, setCurrentPage] = React.useState('dashboard');
 
-  const renderContent = () => {
+  const renderPage = () => {
     switch(currentPage) {
       case 'dashboard':
         return <Dashboard />;
@@ -13,9 +13,9 @@ function MainLayout({ userRole, onLogout, children }) {
       case 'suppliers':
         return <Suppliers />;
       case 'users':
-        return userRole === 'admin' ? <Users /> : null;
+        return userRole === 'admin' ? <Users /> : <div>Akses ditolak</div>;
       case 'reports':
-        return userRole === 'admin' ? <Reports /> : null;
+        return userRole === 'admin' ? <Reports /> : <div>Akses ditolak</div>;
       default:
         return <Dashboard />;
     }
@@ -39,7 +39,7 @@ function MainLayout({ userRole, onLogout, children }) {
         />
         
         <main className="p-6 mt-16">
-          {renderContent()}
+          {renderPage()}
         </main>
       </div>
     </div>
