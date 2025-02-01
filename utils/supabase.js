@@ -5,7 +5,6 @@ const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 async function signIn(username, password) {
   try {
-    // Cari user berdasarkan username
     const { data: user, error: userError } = await supabaseClient
       .from('users')
       .select('*')
@@ -15,12 +14,10 @@ async function signIn(username, password) {
     if (userError) throw userError;
     if (!user) throw new Error('User tidak ditemukan');
 
-    // Verifikasi password (dalam produksi gunakan bcrypt)
     if (password !== user.password) {
       throw new Error('Password salah');
     }
 
-    // Simpan data user di localStorage
     localStorage.setItem('user_id', user.id);
     localStorage.setItem('user_role', user.role);
     localStorage.setItem('user_name', user.name);
@@ -38,29 +35,273 @@ async function signIn(username, password) {
   }
 }
 
-function signOut() {
+async function getProducts() {
   try {
-    // Hapus data user dari localStorage
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('user_role');
-    localStorage.removeItem('user_name');
-    return Promise.resolve();
+    const { data, error } = await supabaseClient
+      .from('products')
+      .select(`
+        *,
+        supplier:suppliers (
+          company,
+          pic_name
+        )
+      `)
+      .order('name');
+
+    if (error) throw error;
+    return data;
   } catch (error) {
     reportError(error);
-    throw new Error('Logout gagal: ' + error.message);
+    throw new Error('Gagal memuat produk: ' + error.message);
   }
 }
 
-// Fungsi untuk mengecek apakah user sudah login
-function checkAuth() {
-  const userId = localStorage.getItem('user_id');
-  const userRole = localStorage.getItem('user_role');
-  return !!userId && !!userRole;
+async function createProduct(product) {
+  try {
+    const { data, error } = await supabaseClient
+      .from('products')
+      .insert([product])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal menambah produk: ' + error.message);
+  }
 }
 
-// Fungsi untuk mendapatkan role user
-function getUserRole() {
-  return localStorage.getItem('user_role') || null;
+async function updateProduct(id, product) {
+  try {
+    const { data, error } = await supabaseClient
+      .from('products')
+      .update(product)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal mengupdate produk: ' + error.message);
+  }
 }
 
-// Fungsi lainnya tetap sama seperti sebelumnya...
+async function deleteProduct(id) {
+  try {
+    const { error } = await supabaseClient
+      .from('products')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal menghapus produk: ' + error.message);
+  }
+}
+
+async function getSuppliers() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('suppliers')
+      .select('*')
+      .order('company');
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal memuat supplier: ' + error.message);
+  }
+}
+
+async function createSupplier(supplier) {
+  try {
+    const { data, error } = await supabaseClient
+      .from('suppliers')
+      .insert([supplier])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal menambah supplier: ' + error.message);
+  }
+}
+
+async function updateSupplier(id, supplier) {
+  try {
+    const { data, error } = await supabaseClient
+      .from('suppliers')
+      .update(supplier)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal mengupdate supplier: ' + error.message);
+  }
+}
+
+async function deleteSupplier(id) {
+  try {
+    const { error } = await supabaseClient
+      .from('suppliers')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal menghapus supplier: ' + error.message);
+  }
+}
+
+async function getUsers() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('users')
+      .select('*')
+      .order('name');
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal memuat users: ' + error.message);
+  }
+}
+
+async function createUser(user) {
+  try {
+    const { data, error } = await supabaseClient
+      .from('users')
+      .insert([user])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal menambah user: ' + error.message);
+  }
+}
+
+async function updateUser(id, user) {
+  try {
+    const { data, error } = await supabaseClient
+      .from('users')
+      .update(user)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal mengupdate user: ' + error.message);
+  }
+}
+
+async function deleteUser(id) {
+  try {
+    const { error } = await supabaseClient
+      .from('users')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal menghapus user: ' + error.message);
+  }
+}
+
+async function createTransaction(transaction, items) {
+  try {
+    // Buat transaksi baru
+    const { data: newTransaction, error: transactionError } = await supabaseClient
+      .from('transactions')
+      .insert([transaction])
+      .select()
+      .single();
+
+    if (transactionError) throw transactionError;
+
+    // Tambahkan items transaksi
+    const transactionItems = items.map(item => ({
+      transaction_id: newTransaction.id,
+      product_id: item.id,
+      quantity: item.quantity,
+      price: item.price,
+      buy_price: item.buyPrice,
+      subtotal: item.quantity * item.price
+    }));
+
+    const { error: itemsError } = await supabaseClient
+      .from('transaction_items')
+      .insert(transactionItems);
+
+    if (itemsError) throw itemsError;
+
+    // Update stok produk
+    for (const item of items) {
+      const { error: updateError } = await supabaseClient
+        .from('products')
+        .update({ stock: item.stock - item.quantity })
+        .eq('id', item.id);
+
+      if (updateError) throw updateError;
+    }
+
+    return newTransaction;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal membuat transaksi: ' + error.message);
+  }
+}
+
+async function getTransactions(startDate, endDate) {
+  try {
+    let query = supabaseClient
+      .from('transactions')
+      .select(`
+        *,
+        cashier:users (name),
+        items:transaction_items (
+          quantity,
+          price,
+          buy_price,
+          subtotal,
+          product:products (
+            name,
+            code
+          )
+        )
+      `)
+      .order('created_at', { ascending: false });
+
+    if (startDate && endDate) {
+      query = query
+        .gte('created_at', startDate)
+        .lte('created_at', endDate);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    reportError(error);
+    throw new Error('Gagal memuat transaksi: ' + error.message);
+  }
+}
